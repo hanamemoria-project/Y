@@ -15,33 +15,23 @@
            ========================================= */
         #envelope-screen { position: fixed; inset: 0; z-index: 3000; background: #0c0d10; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.8s ease, visibility 0.8s; cursor: pointer; }
         
-        /* Badan Amplop Deep Crimson/Maroon */
         .env-wrapper { position: relative; width: 220px; height: 150px; background: #5c0011; border-radius: 4px; box-shadow: 0 15px 40px rgba(0,0,0,0.4); border: 1px solid rgba(255, 215, 0, 0.1); }
-        
-        /* Ornamen Sudut Emas di Flap Atas (Realistis) */
         .env-wrapper::before { content: ''; position: absolute; top: 0; left: 0; border-left: 110px solid transparent; border-right: 110px solid transparent; border-top: 85px solid #7a0017; z-index: 3; transition: transform 0.8s ease; transform-origin: top; }
-        
-        /* Badan Amplop Depan (Warna sedikit berbeda untuk dimensi) */
         .env-wrapper::after { content: ''; position: absolute; top: 0; left: 0; border-left: 110px solid #5c0011; border-right: 110px solid #5c0011; border-bottom: 85px solid #4a000e; z-index: 1; border-radius: 0 0 4px 4px; }
         
-        /* Ornamen Emas Sudut Bawah */
         .corner-ornament { position: absolute; width: 30px; height: 30px; border: 1px solid #c9a063; z-index: 2; opacity: 0.6; }
         .corner-ornament.bl { bottom: 8px; left: 8px; border-width: 0 0 1px 1px; }
         .corner-ornament.br { bottom: 8px; right: 8px; border-width: 0 1px 1px 0; }
 
-        /* Kertas Surat di Dalam (Krem Gading Mewah) */
         .env-letter { position: absolute; width: 190px; height: 130px; background: #faf3e0; top: 10px; left: 15px; z-index: 2; transition: transform 0.8s ease; display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); border: 1px solid rgba(201, 160, 99, 0.2); }
         .env-letter img { width: 35px; margin-bottom: 10px; opacity: 0.9; }
         .env-letter p { margin: 0; font-family: 'Playfair Display', serif; font-size: 13px; font-weight: 600; color: #333; font-style: italic;}
         
-        /* Segel Lilin (Wax Seal) Emas Berkilau di Tengah */
         .wax-seal { position: absolute; width: 40px; height: 40px; background: radial-gradient(circle at center, #f5da9a 0%, #c9a063 60%, #b3884b 100%); border-radius: 50%; top: 65px; left: 90px; z-index: 4; box-shadow: 0 5px 10px rgba(0,0,0,0.2); transition: opacity 0.4s ease 0.2s, transform 0.6s ease; transform-origin: top;}
         .wax-seal-inner { position: absolute; inset: 4px; border: 1px solid rgba(255,255,255,0.3); border-radius: 50%; display: flex; justify-content: center; align-items: center; color: rgba(0,0,0,0.2); font-family: 'Playfair Display', serif; font-size: 18px; font-weight: bold;}
         
-        /* Teks Petunjuk Bawah */
         .env-text { margin-top: 40px; font-family: 'Poppins', sans-serif; font-size: 11px; font-weight: 500; color: rgba(255,215,0,0.6); letter-spacing: 3px; text-transform: uppercase; animation: pulse 2s infinite; }
         
-        /* Animasi saat diklik (Class .open ditambahkan via JS) */
         .env-wrapper.open::before { transform: rotateX(180deg); z-index: 1; }
         .env-wrapper.open .wax-seal { opacity: 0; transform: translateY(-30px); }
         .env-wrapper.open .env-letter { transform: translateY(-70px); z-index: 3; }
@@ -49,7 +39,7 @@
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
         /* =========================================
-           2. KARTU UCAPAN (GLASSMORPHISM) & TRANSISI
+           2. KARTU UCAPAN (GLASSMORPHISM)
            ========================================= */
         #main-container { position: fixed; inset: 0; z-index: 2000; display: flex; justify-content: center; align-items: center; transition: transform 0.8s ease-in-out; background: inherit; }
         .card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); padding: 40px 30px; border-radius: 20px; text-align: center; width: 85%; max-width: 320px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); border: 1px solid rgba(201, 160, 99, 0.2); }
@@ -64,24 +54,26 @@
         .btn-utama:hover { background: #000; transform: translateY(-2px); }
         
         /* =========================================
-           3. TUTORIAL PEMINDAI (RADAR REALISTIS)
+           3. TUTORIAL PEMINDAI (PONSEL EMAS MELAYANG)
            ========================================= */
         #scanner-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
         #tutorial-overlay { position: fixed; inset: 0; z-index: 1500; display: none; flex-direction: column; justify-content: center; align-items: center; background: rgba(0,0,0,0.9); color: white; backdrop-filter: blur(8px); }
         
-        /* Sinyal Radar Pemindaian Modern di Viewfinder */
-        .scan-radar { width: 180px; height: 180px; position: relative; margin-bottom: 40px; }
+        /* Wadah Animasi HP Melayang */
+        .tutorial-phone-container { position: relative; width: 140px; height: 240px; margin-bottom: 30px; animation: floatPhone 3.5s ease-in-out infinite; }
+        .floating-phone-svg { width: 100%; height: 100%; filter: drop-shadow(0 15px 25px rgba(201, 160, 99, 0.2)); }
         
-        /* Bingkai Viewfinder Polaroid */
-        .scan-frame { position: absolute; inset: 0; border: 2px solid rgba(255, 255, 255, 0.4); border-radius: 12px; }
-        .scan-frame::after { content: ''; position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%); width: 80px; height: 15px; background: rgba(255,255,255,0.1); border-radius: 4px;}
+        @keyframes floatPhone { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-15px); } }
 
-        /* Efek Pulse Radar */
-        .radar-pulse { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 10px; height: 10px; background: #ffdf91; border-radius: 50%; box-shadow: 0 0 15px #ffdf91;}
-        .radar-pulse::before, .radar-pulse::after { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); border: 1px solid #ffdf91; border-radius: 50%; opacity: 0; animation: radarBeam 3s infinite; }
-        .radar-pulse::after { animation-delay: 1.5s; }
-
-        @keyframes radarBeam { 0% { width: 10px; height: 10px; opacity: 1; } 100% { width: 180px; height: 180px; opacity: 0; } }
+        /* Garis Scan yang bergerak di atas HP */
+        .scan-line-vertical { position: absolute; left: 22%; right: 22%; height: 2px; background: #ffdf91; box-shadow: 0 0 15px #ffdf91, 0 0 5px #ffffff; animation: scanUpDown 2.5s ease-in-out infinite; border-radius: 50%; z-index: 2; }
+        @keyframes scanUpDown { 
+            0% { top: 22%; opacity: 0; } 
+            15% { opacity: 1; } 
+            50% { top: 78%; } 
+            85% { opacity: 1; } 
+            100% { top: 22%; opacity: 0; } 
+        }
 
         .tutorial-text h3 { font-family: 'Playfair Display', serif; font-weight: 600; font-size: 20px; margin: 0 0 10px 0; letter-spacing: 1px; color: #ffdf91; }
         .tutorial-text p { font-family: 'Poppins', sans-serif; font-weight: 300; font-size: 13px; color: rgba(255, 255, 255, 0.7); margin: 0; line-height: 1.6; }
@@ -110,13 +102,26 @@
     </div>
 
     <div id="tutorial-overlay">
-        <div class="scan-radar">
-            <div class="scan-frame"></div>
-            <div class="radar-pulse"></div>
+        <div class="tutorial-phone-container">
+            <svg viewBox="0 0 100 180" class="floating-phone-svg" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="gold-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#f5da9a" />
+                        <stop offset="50%" stop-color="#c9a063" />
+                        <stop offset="100%" stop-color="#b3884b" />
+                    </linearGradient>
+                </defs>
+                <rect x="15" y="10" width="70" height="150" rx="12" stroke="url(#gold-grad)" stroke-width="2.5" fill="rgba(20, 20, 20, 0.8)" />
+                <rect x="19" y="14" width="62" height="142" rx="9" stroke="rgba(255,255,255,0.15)" stroke-width="1" fill="none" />
+                <path d="M 40 14 L 60 14 C 62 14 63 15 63 17 L 37 17 C 37 15 38 14 40 14 Z" fill="url(#gold-grad)" opacity="0.8"/>
+                <rect x="25" y="50" width="50" height="70" rx="4" stroke="rgba(255, 215, 0, 0.4)" stroke-width="1.5" stroke-dasharray="4 4" fill="none" />
+            </svg>
+            
+            <div class="scan-line-vertical"></div>
         </div>
         <div class="tutorial-text" style="text-align: center;">
             <h3>Arahkan Kamera</h3>
-            <p>Paskan bingkai radar di layar pada foto,<br>keajaiban akan segera hadir.</p>
+            <p>Paskan layar ponsel pada foto fisik,<br>keajaiban akan segera hadir.</p>
         </div>
     </div>
 
@@ -167,7 +172,6 @@
 
         if(isAdmin) document.getElementById('admin-controls').style.display = 'flex';
 
-        // Fungsi Animasi Membuka Amplop Mewah
         function bukaAmplop() {
             if (isStarted) return;
             isStarted = true;
@@ -176,16 +180,14 @@
             const teks = document.getElementById('env-petunjuk');
             const screen = document.getElementById('envelope-screen');
             
-            // 1. Jalankan animasi CSS Buka Flap, Wax Seal memudar, Angkat Surat
             amplop.classList.add('open');
             teks.style.opacity = '0';
             
-            // 2. Tunggu 1.5 detik agar animasi surat keluar selesai, lalu hilangkan layar
             setTimeout(() => {
                 screen.style.opacity = '0';
                 setTimeout(() => {
                     screen.style.visibility = 'hidden';
-                    loadData(); // Mulai memuat data AR
+                    loadData(); 
                 }, 800);
             }, 1500);
         }
