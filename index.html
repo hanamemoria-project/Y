@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <title>Hana Memoria - AR Experience</title>
+    <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; font-family: 'Inter', sans-serif; overflow: hidden; background: #fdfbf7; }
+        
+        /* Tema Card Glassmorphism yang Elegan dan Soft */
+        #main-container { position: fixed; inset: 0; z-index: 2000; display: flex; justify-content: center; align-items: center; transition: transform 0.8s ease-in-out; background: inherit; }
+        .card { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); padding: 40px 30px; border-radius: 24px; text-align: center; width: 85%; max-width: 320px; box-shadow: 0 20px 40px rgba(0,0,0,0.05); border: 1px solid rgba(255, 255, 255, 0.5); }
+        .card h2 { color: #2d3436; font-size: 22px; margin-top: 0; margin-bottom: 10px; font-weight: 600; }
+        .card p { color: #636e72; font-size: 14px; line-height: 1.6; margin-bottom: 25px; }
+        .btn-utama { background: #2d3436; border: none; padding: 14px 25px; border-radius: 50px; color: white; font-weight: 600; cursor: pointer; width: 100%; display: none; transition: transform 0.2s, background 0.2s; font-size: 14px; letter-spacing: 0.5px; }
+        .btn-utama:hover { background: #000; transform: translateY(-2px); }
+        
+        #scanner-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+        
+        /* Ikon Pemindai Modern ala Bingkai Kamera/Polaroid */
+        #tutorial-overlay { position: fixed; inset: 0; z-index: 1500; display: none; flex-direction: column; justify-content: center; align-items: center; background: rgba(0,0,0,0.8); color: white; backdrop-filter: blur(5px); }
+        .viewfinder { width: 220px; height: 300px; position: relative; margin-bottom: 30px; }
+        /* Sudut-sudut bingkai */
+        .viewfinder::before, .viewfinder::after, .viewfinder-inner::before, .viewfinder-inner::after { content: ''; position: absolute; width: 30px; height: 30px; border-color: rgba(255, 255, 255, 0.8); border-style: solid; }
+        .viewfinder::before { top: 0; left: 0; border-width: 3px 0 0 3px; border-radius: 8px 0 0 0; }
+        .viewfinder::after { top: 0; right: 0; border-width: 3px 3px 0 0; border-radius: 0 8px 0 0; }
+        .viewfinder-inner::before { bottom: 0; left: 0; border-width: 0 0 3px 3px; border-radius: 0 0 0 8px; }
+        .viewfinder-inner::after { bottom: 0; right: 0; border-width: 0 3px 3px 0; border-radius: 0 0 8px 0; }
+        
+        /* Garis Pemindai Halus */
+        .scan-line { position: absolute; top: 0; left: 5%; right: 5%; height: 2px; background: rgba(255, 255, 255, 0.6); box-shadow: 0 0 10px rgba(255, 255, 255, 0.8); animation: scanMove 2.5s infinite ease-in-out; border-radius: 50%; }
+        @keyframes scanMove { 0% { top: 5%; opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { top: 95%; opacity: 0; } }
+
+        .tutorial-text h3 { font-weight: 600; font-size: 18px; margin: 0 0 8px 0; letter-spacing: 0.5px; }
+        .tutorial-text p { font-size: 13px; color: rgba(255, 255, 255, 0.7); margin: 0; }
+
+        #admin-controls { position: fixed; top: 0; left: 0; z-index: 9999; background: rgba(0,0,0,0.8); color: white; padding: 10px; display: none; flex-wrap: wrap; gap: 5px; font-size: 10px; width: 100%; justify-content: center; }
+        .btn-admin { background: #444; color: white; border: 1px solid #666; padding: 8px; border-radius: 4px; cursor: pointer; }
+        #qr-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:10000; flex-direction:column; justify-content:center; align-items:center; color:white; }
+    </style>
+</head>
+<body>
+
+    <button id="startBtn" style="position:fixed; inset:0; z-index:3000; background:#fdfbf7; color:#2d3436; border:none; font-size:16px; font-weight:600; font-family:'Inter', sans-serif; cursor:pointer; letter-spacing:1px;">KLIK UNTUK MEMULAI ✨</button>
+
+    <div id="tutorial-overlay">
+        <div class="viewfinder">
+            <div class="viewfinder-inner"></div>
+            <div class="scan-line"></div>
+        </div>
+        <div class="tutorial-text" style="text-align: center;">
+            <h3>Arahkan Kamera</h3>
+            <p>Paskan bingkai ke dalam foto polaroid</p>
+        </div>
+    </div>
+
+    <div id="admin-controls">
+        <button class="btn-admin" onclick="move('up')">↑ Naik</button>
+        <button class="btn-admin" onclick="move('down')">↓ Turun</button>
+        <button class="btn-admin" onclick="move('left')">← Kiri</button>
+        <button class="btn-admin" onclick="move('right')">→ Kanan</button>
+        <button class="btn-admin" onclick="adjust('w', 0.1)">W+ Lebar</button>
+        <button class="btn-admin" onclick="adjust('w', -0.1)">W- Kecil</button>
+        <button class="btn-admin" onclick="adjust('h', 0.1)">H+ Tinggi</button>
+        <button class="btn-admin" onclick="adjust('h', -0.1)">H- Pendek</button>
+        <button class="btn-admin" style="background: #27ae60;" onclick="showLogs()">HASIL</button>
+        <button class="btn-admin" style="background: #2980b9;" onclick="tampilkanQR()">QR</button>
+    </div>
+
+    <div id="main-container">
+        <div class="card" id="card-pesan">
+            <h2 id="judul-txt">Memuat...</h2>
+            <p id="isi-txt">Menghubungkan ke data kenangan...</p>
+            <button class="btn-utama" id="btn-next" onclick="handleNext()">LANJUT</button>
+        </div>
+    </div>
+
+    <div id="qr-overlay">
+        <div style="background:white; padding:20px; border-radius:15px; text-align:center;">
+            <img id="qr-img" src="" style="width:200px;"><br>
+            <button class="btn-admin" style="color:black; margin-top:10px;" onclick="document.getElementById('qr-overlay').style.display='none'">TUTUP</button>
+        </div>
+    </div>
+
+    <div id="scanner-container"></div>
+
+    <script>
+        const SUPABASE_URL = 'https://ujnuvlrdxzqtfppbhioo.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVqbnV2bHJkeHpxdGZwcGJoaW9vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwNjU2OTYsImV4cCI6MjA5MDY0MTY5Nn0.slqPc8v7QZXxHzvMkOlXWAAYebX-sqUIiKZvA9DJkl0';
+
+        const params = new URLSearchParams(window.location.search);
+        const idPelanggan = params.get('id') || 'default';
+        const isAdmin = params.get('admin') === 'true';
+
+        let slides = [];
+        let slideIndex = 0;
+        let posX = 0, posY = 0, w = 1, h = 1.5, rotZ = 0;
+
+        if(isAdmin) document.getElementById('admin-controls').style.display = 'flex';
+
+        async function loadData() {
+            try {
+                const res = await fetch(`${SUPABASE_URL}/rest/v1/Pesanan?id_pesanan=eq.${idPelanggan}`, {
+                    headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+                });
+                
+                if (!res.ok) throw new Error("Gagal akses database");
+                
+                const result = await res.json();
+                const data = result[0];
+
+                if(data) {
+                    let rawSlides = data.slides;
+                    try { if (typeof rawSlides === 'string') rawSlides = JSON.parse(rawSlides); } catch(e) {}
+
+                    if (Array.isArray(rawSlides) && rawSlides.length > 0 && rawSlides[0].t) {
+                        slides = rawSlides;
+                    } else {
+                        slides = [
+                            { "t": "Haii! ✨", "b": "Momen ini akan hidup kembali." },
+                            { "t": "Pesan Spesial 💌", "b": "Ada kejutan kecil yang udah nungguin kamu di dalem sini." },
+                            { "t": "Cara Lihatnya", "b": "Klik tombol di bawah, lalu arahin kameramu ke foto ya. Enjoy! 🌸" }
+                        ];
+                    }
+
+                    const p = (data.video_posisi || "0 0 0").split(' ');
+                    const s = (data.video_skala || "1 1.5 1").split(' ');
+                    posX = parseFloat(p[0]); posY = parseFloat(p[1]);
+                    w = parseFloat(s[0]); h = parseFloat(s[1]);
+                    rotZ = parseFloat((data.video_rotasi || "0 0 0").split(' ')[2]);
+
+                    document.getElementById('scanner-container').innerHTML = `
+                        <a-scene id="ar-scene" mindar-image="imageTargetSrc: ${data.link_target}; autoStart: false; uiScanning: no;" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
+                            <a-assets>
+                                <video id="webVideo" src="${data.link_video}" loop="true" crossorigin="anonymous" playsinline webkit-playsinline></video>
+                            </a-assets>
+                            <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+                            <a-entity mindar-image-target="targetIndex: 0" id="target-ar">
+                                <a-video id="vDisplay" src="#webVideo" position="${posX} ${posY} 0" width="${w}" height="${h}" rotation="0 0 ${rotZ}"></a-video>
+                            </a-entity>
+                        </a-scene>
+                    `;
+
+                    document.getElementById('btn-next').style.display = 'inline-block';
+                    updateUI();
+
+                    setTimeout(() => {
+                        const targetAR = document.getElementById('target-ar');
+                        const vid = document.getElementById('webVideo');
+                        
+                        targetAR.addEventListener("targetFound", event => {
+                            document.getElementById('tutorial-overlay').style.display = 'none';
+                            vid.play();
+                        });
+                        
+                        targetAR.addEventListener("targetLost", event => {
+                            document.getElementById('tutorial-overlay').style.display = 'flex';
+                            vid.pause();
+                        });
+                    }, 1500);
+
+                } else {
+                    document.getElementById('judul-txt').innerText = "Oops!";
+                    document.getElementById('isi-txt').innerText = "Data tidak ditemukan. Pastikan kamu memindai QR yang benar.";
+                }
+            } catch (e) { 
+                document.getElementById('judul-txt').innerText = "Koneksi Gagal";
+                document.getElementById('isi-txt').innerText = "Pastikan koneksi internet kamu stabil.";
+            }
+        }
+
+        function updateUI() {
+            if(slides.length > 0) {
+                document.getElementById('judul-txt').innerText = slides[slideIndex].t || "Hana Memoria";
+                document.getElementById('isi-txt').innerText = slides[slideIndex].b || "...";
+                document.getElementById('btn-next').innerText = (slideIndex === slides.length - 1) ? "LIHAT KEJUTAN" : "LANJUT";
+            }
+            const vd = document.getElementById('vDisplay');
+            if(vd) {
+                vd.setAttribute('position', `${posX} ${posY} 0`);
+                vd.setAttribute('width', w);
+                vd.setAttribute('height', h);
+                vd.setAttribute('rotation', `0 0 ${rotZ}`);
+            }
+        }
+
+        function handleNext() {
+            if(slideIndex < slides.length - 1) {
+                slideIndex++;
+                updateUI();
+            } else {
+                document.getElementById('main-container').style.transform = "translateY(-100%)";
+                document.getElementById('tutorial-overlay').style.display = 'flex';
+                
+                const scene = document.getElementById('ar-scene');
+                if(scene && scene.systems["mindar-image-system"]) {
+                    scene.systems["mindar-image-system"].start();
+                }
+                
+                document.getElementById('webVideo').play().catch(()=>{});
+                document.getElementById('webVideo').pause();
+            }
+        }
+
+        function move(dir) {
+            if(dir === 'up') posY += 0.05; if(dir === 'down') posY -= 0.05;
+            if(dir === 'left') posX -= 0.05; if(dir === 'right') posX += 0.05;
+            updateUI();
+        }
+        function adjust(type, val) {
+            if(type === 'w') w += val; if(type === 'h') h += val;
+            updateUI();
+        }
+        function showLogs() {
+            alert(`HASIL UNTUK SUPABASE:\nvideo_posisi: ${posX.toFixed(2)} ${posY.toFixed(2)} 0\nvideo_skala: ${w.toFixed(2)} ${h.toFixed(2)} 1\nvideo_rotasi: 0 0 ${rotZ}`);
+        }
+        function tampilkanQR() {
+            const url = `${window.location.origin}${window.location.pathname}?id=${idPelanggan}`;
+            document.getElementById('qr-img').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(url)}`;
+            document.getElementById('qr-overlay').style.display = 'flex';
+        }
+
+        document.getElementById('startBtn').addEventListener('click', () => {
+            document.getElementById('startBtn').style.display = 'none';
+            loadData();
+        });
+    </script>
+</body>
+</html>
