@@ -5,54 +5,94 @@
     <title>Hana Memoria - AR Experience</title>
     <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,600&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
     <style>
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; font-family: 'Inter', sans-serif; overflow: hidden; background: #fdfbf7; }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #fdfbf7; }
         
-        /* Tema Card Glassmorphism yang Elegan dan Soft */
+        /* =========================================
+           1. ANIMASI AMPLOP PEMBUKA (START SCREEN)
+           ========================================= */
+        #envelope-screen { position: fixed; inset: 0; z-index: 3000; background: #fdfbf7; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.8s ease, visibility 0.8s; cursor: pointer; }
+        .env-wrapper { position: relative; width: 220px; height: 150px; background: #e2d8c3; border-radius: 4px; box-shadow: 0 15px 30px rgba(0,0,0,0.1); transition: transform 0.3s ease; }
+        .env-wrapper:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
+        
+        /* Tutup Amplop Atas */
+        .env-wrapper::before { content: ''; position: absolute; top: 0; left: 0; border-left: 110px solid transparent; border-right: 110px solid transparent; border-top: 85px solid #d4c5a9; z-index: 3; transition: transform 0.6s ease; transform-origin: top; }
+        /* Badan Amplop Bawah */
+        .env-wrapper::after { content: ''; position: absolute; top: 0; left: 0; border-left: 110px solid #ecdac1; border-right: 110px solid #ecdac1; border-bottom: 85px solid #f3e5ce; z-index: 1; }
+        
+        /* Kertas Surat di Dalam */
+        .env-letter { position: absolute; width: 190px; height: 130px; background: #fff; top: 10px; left: 15px; z-index: 2; transition: transform 0.6s ease; display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .env-letter img { width: 40px; margin-bottom: 10px; opacity: 0.8; }
+        .env-letter p { margin: 0; font-family: 'Playfair Display', serif; font-size: 14px; font-weight: 600; color: #2d3436; }
+        
+        /* Teks Petunjuk */
+        .env-text { margin-top: 40px; font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 500; color: #636e72; letter-spacing: 2px; text-transform: uppercase; animation: pulse 2s infinite; }
+        
+        /* Animasi saat diklik (Class .open ditambahkan via JS) */
+        .env-wrapper.open::before { transform: rotateX(180deg); z-index: 1; }
+        .env-wrapper.open .env-letter { transform: translateY(-70px); z-index: 3; }
+
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+        /* =========================================
+           2. KARTU UCAPAN (GLASSMORPHISM) & TRANSISI
+           ========================================= */
         #main-container { position: fixed; inset: 0; z-index: 2000; display: flex; justify-content: center; align-items: center; transition: transform 0.8s ease-in-out; background: inherit; }
-        .card { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); padding: 40px 30px; border-radius: 24px; text-align: center; width: 85%; max-width: 320px; box-shadow: 0 20px 40px rgba(0,0,0,0.05); border: 1px solid rgba(255, 255, 255, 0.5); }
-        .card h2 { color: #2d3436; font-size: 22px; margin-top: 0; margin-bottom: 10px; font-weight: 600; }
-        .card p { color: #636e72; font-size: 14px; line-height: 1.6; margin-bottom: 25px; }
-        .btn-utama { background: #2d3436; border: none; padding: 14px 25px; border-radius: 50px; color: white; font-weight: 600; cursor: pointer; width: 100%; display: none; transition: transform 0.2s, background 0.2s; font-size: 14px; letter-spacing: 0.5px; }
+        .card { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); padding: 40px 30px; border-radius: 24px; text-align: center; width: 85%; max-width: 320px; box-shadow: 0 20px 40px rgba(0,0,0,0.05); border: 1px solid rgba(255, 255, 255, 0.6); }
+        
+        /* Area Teks dengan Transisi */
+        #text-content { transition: opacity 0.4s ease, transform 0.4s ease; }
+        .fade-out { opacity: 0; transform: translateY(10px); }
+        
+        .card h2 { color: #2d3436; font-family: 'Playfair Display', serif; font-size: 24px; margin-top: 0; margin-bottom: 15px; font-weight: 600; font-style: italic; }
+        .card p { color: #636e72; font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 300; line-height: 1.7; margin-bottom: 30px; }
+        
+        .btn-utama { background: #2d3436; font-family: 'Poppins', sans-serif; border: none; padding: 14px 25px; border-radius: 50px; color: white; font-weight: 500; cursor: pointer; width: 100%; display: none; transition: transform 0.2s, background 0.2s; font-size: 13px; letter-spacing: 1px; }
         .btn-utama:hover { background: #000; transform: translateY(-2px); }
         
+        /* =========================================
+           3. TUTORIAL PEMINDAI (TANGAN & HP)
+           ========================================= */
         #scanner-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+        #tutorial-overlay { position: fixed; inset: 0; z-index: 1500; display: none; flex-direction: column; justify-content: center; align-items: center; background: rgba(0,0,0,0.85); color: white; backdrop-filter: blur(5px); }
         
-        /* Ikon Pemindai Modern ala Bingkai Kamera/Polaroid */
-        #tutorial-overlay { position: fixed; inset: 0; z-index: 1500; display: none; flex-direction: column; justify-content: center; align-items: center; background: rgba(0,0,0,0.8); color: white; backdrop-filter: blur(5px); }
-        .viewfinder { width: 220px; height: 300px; position: relative; margin-bottom: 30px; }
-        /* Sudut-sudut bingkai */
-        .viewfinder::before, .viewfinder::after, .viewfinder-inner::before, .viewfinder-inner::after { content: ''; position: absolute; width: 30px; height: 30px; border-color: rgba(255, 255, 255, 0.8); border-style: solid; }
-        .viewfinder::before { top: 0; left: 0; border-width: 3px 0 0 3px; border-radius: 8px 0 0 0; }
-        .viewfinder::after { top: 0; right: 0; border-width: 3px 3px 0 0; border-radius: 0 8px 0 0; }
-        .viewfinder-inner::before { bottom: 0; left: 0; border-width: 0 0 3px 3px; border-radius: 0 0 0 8px; }
-        .viewfinder-inner::after { bottom: 0; right: 0; border-width: 0 3px 3px 0; border-radius: 0 0 8px 0; }
-        
-        /* Garis Pemindai Halus */
-        .scan-line { position: absolute; top: 0; left: 5%; right: 5%; height: 2px; background: rgba(255, 255, 255, 0.6); box-shadow: 0 0 10px rgba(255, 255, 255, 0.8); animation: scanMove 2.5s infinite ease-in-out; border-radius: 50%; }
-        @keyframes scanMove { 0% { top: 5%; opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { top: 95%; opacity: 0; } }
+        .phone-hand-icon { width: 100px; height: 100px; margin-bottom: 25px; animation: scanBob 2.5s infinite ease-in-out; filter: drop-shadow(0px 10px 15px rgba(0,255,200,0.2)); }
+        @keyframes scanBob { 0%, 100% { transform: translateY(-8px) rotate(-3deg); } 50% { transform: translateY(8px) rotate(3deg); } }
 
-        .tutorial-text h3 { font-weight: 600; font-size: 18px; margin: 0 0 8px 0; letter-spacing: 0.5px; }
-        .tutorial-text p { font-size: 13px; color: rgba(255, 255, 255, 0.7); margin: 0; }
+        .tutorial-text h3 { font-family: 'Playfair Display', serif; font-weight: 600; font-size: 22px; margin: 0 0 10px 0; letter-spacing: 1px; }
+        .tutorial-text p { font-family: 'Poppins', sans-serif; font-weight: 300; font-size: 13px; color: rgba(255, 255, 255, 0.8); margin: 0; line-height: 1.6; }
 
-        #admin-controls { position: fixed; top: 0; left: 0; z-index: 9999; background: rgba(0,0,0,0.8); color: white; padding: 10px; display: none; flex-wrap: wrap; gap: 5px; font-size: 10px; width: 100%; justify-content: center; }
+        /* Panel Admin */
+        #admin-controls { position: fixed; top: 0; left: 0; z-index: 9999; background: rgba(0,0,0,0.8); color: white; padding: 10px; display: none; flex-wrap: wrap; gap: 5px; font-size: 10px; width: 100%; justify-content: center; font-family: sans-serif;}
         .btn-admin { background: #444; color: white; border: 1px solid #666; padding: 8px; border-radius: 4px; cursor: pointer; }
         #qr-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:10000; flex-direction:column; justify-content:center; align-items:center; color:white; }
     </style>
 </head>
 <body>
 
-    <button id="startBtn" style="position:fixed; inset:0; z-index:3000; background:#fdfbf7; color:#2d3436; border:none; font-size:16px; font-weight:600; font-family:'Inter', sans-serif; cursor:pointer; letter-spacing:1px;">KLIK UNTUK MEMULAI ✨</button>
+    <div id="envelope-screen" onclick="bukaAmplop()">
+        <div class="env-wrapper" id="amplop">
+            <div class="env-letter">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2d3436" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                <p>Hana Memoria</p>
+            </div>
+        </div>
+        <div class="env-text" id="env-petunjuk">Sentuh untuk membuka</div>
+    </div>
 
     <div id="tutorial-overlay">
-        <div class="viewfinder">
-            <div class="viewfinder-inner"></div>
-            <div class="scan-line"></div>
-        </div>
+        <svg class="phone-hand-icon" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+            <path d="M12 18h.01"></path>
+            <circle cx="15" cy="5" r="1" fill="white"></circle>
+            <path d="M19 10h1a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-1"></path>
+            <path d="M5 12H4a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h1"></path>
+        </svg>
         <div class="tutorial-text" style="text-align: center;">
             <h3>Arahkan Kamera</h3>
-            <p>Paskan bingkai ke dalam foto polaroid</p>
+            <p>Paskan layar ponselmu dengan foto fisik,<br>lalu saksikan keajaibannya.</p>
         </div>
     </div>
 
@@ -71,8 +111,10 @@
 
     <div id="main-container">
         <div class="card" id="card-pesan">
-            <h2 id="judul-txt">Memuat...</h2>
-            <p id="isi-txt">Menghubungkan ke data kenangan...</p>
+            <div id="text-content">
+                <h2 id="judul-txt">Mempersiapkan...</h2>
+                <p id="isi-txt">Menata kembali setiap potongan memori...</p>
+            </div>
             <button class="btn-utama" id="btn-next" onclick="handleNext()">LANJUT</button>
         </div>
     </div>
@@ -97,8 +139,32 @@
         let slides = [];
         let slideIndex = 0;
         let posX = 0, posY = 0, w = 1, h = 1.5, rotZ = 0;
+        let isStarted = false;
 
         if(isAdmin) document.getElementById('admin-controls').style.display = 'flex';
+
+        // Fungsi Animasi Membuka Amplop
+        function bukaAmplop() {
+            if (isStarted) return;
+            isStarted = true;
+            
+            const amplop = document.getElementById('amplop');
+            const teks = document.getElementById('env-petunjuk');
+            const screen = document.getElementById('envelope-screen');
+            
+            // 1. Jalankan animasi CSS Buka Flap & Angkat Surat
+            amplop.classList.add('open');
+            teks.style.opacity = '0';
+            
+            // 2. Tunggu 1.2 detik agar animasi surat keluar selesai, lalu hilangkan layar
+            setTimeout(() => {
+                screen.style.opacity = '0';
+                setTimeout(() => {
+                    screen.style.visibility = 'hidden';
+                    loadData(); // Mulai memuat AR setelah amplop hilang
+                }, 800);
+            }, 1200);
+        }
 
         async function loadData() {
             try {
@@ -118,10 +184,11 @@
                     if (Array.isArray(rawSlides) && rawSlides.length > 0 && rawSlides[0].t) {
                         slides = rawSlides;
                     } else {
+                        // Teks Hangat & Profesional Default
                         slides = [
-                            { "t": "Haii! ✨", "b": "Momen ini akan hidup kembali." },
-                            { "t": "Pesan Spesial 💌", "b": "Ada kejutan kecil yang udah nungguin kamu di dalem sini." },
-                            { "t": "Cara Lihatnya", "b": "Klik tombol di bawah, lalu arahin kameramu ke foto ya. Enjoy! 🌸" }
+                            { "t": "Kepingan Memori ✨", "b": "Setiap momen memiliki ceritanya sendiri. Hari ini, kenangan manis itu akan kembali dihidupkan khusus untukmu." },
+                            { "t": "Pesan Spesial 💌", "b": "Ada sebaris doa dan rindu yang telah disiapkan. Semoga ini mengukir senyum di wajahmu." },
+                            { "t": "Cara Menikmati", "b": "Sentuh tombol di bawah, arahkan kameramu ke foto fisik, dan saksikan keajaibannya. Selamat bernostalgia! 🌸" }
                         ];
                     }
 
@@ -163,11 +230,11 @@
 
                 } else {
                     document.getElementById('judul-txt').innerText = "Oops!";
-                    document.getElementById('isi-txt').innerText = "Data tidak ditemukan. Pastikan kamu memindai QR yang benar.";
+                    document.getElementById('isi-txt').innerText = "Kenangan tidak ditemukan. Pastikan kamu memindai QR yang benar.";
                 }
             } catch (e) { 
-                document.getElementById('judul-txt').innerText = "Koneksi Gagal";
-                document.getElementById('isi-txt').innerText = "Pastikan koneksi internet kamu stabil.";
+                document.getElementById('judul-txt').innerText = "Koneksi Terputus";
+                document.getElementById('isi-txt').innerText = "Pastikan koneksi internet kamu stabil untuk memuat kenangan ini.";
             }
         }
 
@@ -175,7 +242,9 @@
             if(slides.length > 0) {
                 document.getElementById('judul-txt').innerText = slides[slideIndex].t || "Hana Memoria";
                 document.getElementById('isi-txt').innerText = slides[slideIndex].b || "...";
-                document.getElementById('btn-next').innerText = (slideIndex === slides.length - 1) ? "LIHAT KEJUTAN" : "LANJUT";
+                
+                const btn = document.getElementById('btn-next');
+                btn.innerText = (slideIndex === slides.length - 1) ? "MULAI SCAN FOTO" : "SELANJUTNYA";
             }
             const vd = document.getElementById('vDisplay');
             if(vd) {
@@ -186,11 +255,23 @@
             }
         }
 
+        // Fungsi Transisi Teks
         function handleNext() {
             if(slideIndex < slides.length - 1) {
-                slideIndex++;
-                updateUI();
+                const textContent = document.getElementById('text-content');
+                // 1. Tambahkan efek pudar (Fade Out)
+                textContent.classList.add('fade-out');
+                
+                // 2. Tunggu 400ms hingga teks benar-benar hilang, lalu ganti teksnya
+                setTimeout(() => {
+                    slideIndex++;
+                    updateUI();
+                    // 3. Munculkan kembali (Fade In)
+                    textContent.classList.remove('fade-out');
+                }, 400);
+                
             } else {
+                // Selesai membaca ucapan, masuk ke mode AR
                 document.getElementById('main-container').style.transform = "translateY(-100%)";
                 document.getElementById('tutorial-overlay').style.display = 'flex';
                 
@@ -221,11 +302,6 @@
             document.getElementById('qr-img').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(url)}`;
             document.getElementById('qr-overlay').style.display = 'flex';
         }
-
-        document.getElementById('startBtn').addEventListener('click', () => {
-            document.getElementById('startBtn').style.display = 'none';
-            loadData();
-        });
     </script>
 </body>
 </html>
