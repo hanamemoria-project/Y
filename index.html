@@ -2,83 +2,109 @@
 <html lang="id">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-    <title>Hana Memoria - Royal Experience</title>
+    <title>Hana Memoria - Ar Experience</title>
     <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,600&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;1,500;1,600&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
     
     <style>
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #0c0d10; }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #fdfbf7; }
         
         /* =========================================
-           1. LAYAR AMPLOP MEWAH (START SCREEN)
+           1. LAYAR AMPLOP MEMORABEL (START SCREEN)
            ========================================= */
-        #envelope-screen { position: fixed; inset: 0; z-index: 3000; background: #0c0d10; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.8s ease, visibility 0.8s; cursor: pointer; }
+        #envelope-screen { position: fixed; inset: 0; z-index: 3000; background: #fdfbf7; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.8s ease, visibility 0.8s; cursor: pointer; }
         
-        .env-wrapper { position: relative; width: 220px; height: 150px; background: #5c0011; border-radius: 4px; box-shadow: 0 15px 40px rgba(0,0,0,0.4); border: 1px solid rgba(255, 215, 0, 0.1); }
-        .env-wrapper::before { content: ''; position: absolute; top: 0; left: 0; border-left: 110px solid transparent; border-right: 110px solid transparent; border-top: 85px solid #7a0017; z-index: 3; transition: transform 0.8s ease; transform-origin: top; }
-        .env-wrapper::after { content: ''; position: absolute; top: 0; left: 0; border-left: 110px solid #5c0011; border-right: 110px solid #5c0011; border-bottom: 85px solid #4a000e; z-index: 1; border-radius: 0 0 4px 4px; }
+        /* Badan Amplop (Warna Soft Cream Gading) */
+        .env-wrapper { position: relative; width: 240px; height: 160px; background: #f8eee4; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid rgba(216, 160, 124, 0.2); transition: transform 0.3s ease; }
+        .env-wrapper:hover { transform: translateY(-5px); }
+
+        /* Penutup Bergelombang (Scalloped Flap) */
+        .env-flap { position: absolute; top: 0; left: 0; right: 0; height: 90px; background: #eaded1; z-index: 3; transition: transform 0.8s ease; transform-origin: top; 
+            border-radius: 0 0 120px 120px / 0 0 60px 60px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+        }
         
-        .corner-ornament { position: absolute; width: 30px; height: 30px; border: 1px solid #c9a063; z-index: 2; opacity: 0.6; }
+        /* Kertas Surat di Dalam (Soft Pink) */
+        .env-letter { position: absolute; width: 210px; height: 140px; background: #fff5f0; top: 10px; left: 15px; z-index: 2; transition: transform 0.8s ease; display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.03); border-radius: 8px; border: 1px solid rgba(216, 160, 124, 0.1); }
+        
+        /* Konten Surat */
+        .env-letter img { width: 30px; margin-bottom: 8px; opacity: 0.8; }
+        .env-letter p { margin: 0; font-family: 'Playfair Display', serif; font-size: 13px; font-weight: 500; color: #5c0011; font-style: italic; }
+        
+        /* ⚠️ PERUBAHAN: Segel Lilin (Wax Seal) Hijau Sage Tua (Mewah Tanpa Emas) */
+        .wax-seal { position: absolute; width: 45px; height: 45px; /* Gradasi Hijau Sage Premium */ background: radial-gradient(circle at center, #719c6e 0%, #2d5a27 60%, #1a3818 100%); border-radius: 50%; top: 70px; left: 97.5px; z-index: 4; box-shadow: 0 5px 15px rgba(0,0,0,0.2); transition: opacity 0.4s ease 0.2s, transform 0.6s ease; transform-origin: top;}
+        
+        /* Detail Bentuk Hati di Dalam Segel (Warna Cream Gading) */
+        .wax-seal-inner { position: absolute; inset: 6px; background: rgba(255,255,255,0.05); border-radius: 50%; display: flex; justify-content: center; align-items: center; }
+        .wax-seal-inner::before { content: '♥'; /* Warna Cream Soft */ color: #eaded1; font-size: 22px; margin-top: -2px; opacity: 0.7;}
+        
+        /* ⚠️ PERUBAHAN: Ornamen Sudut Bawah (Krem Gelap, Bukan Emas) */
+        .corner-ornament { position: absolute; width: 30px; height: 30px; border: 1px solid #eaded1; z-index: 2; opacity: 0.8; }
         .corner-ornament.bl { bottom: 8px; left: 8px; border-width: 0 0 1px 1px; }
         .corner-ornament.br { bottom: 8px; right: 8px; border-width: 0 1px 1px 0; }
 
-        .env-letter { position: absolute; width: 190px; height: 130px; background: #faf3e0; top: 10px; left: 15px; z-index: 2; transition: transform 0.8s ease; display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); border: 1px solid rgba(201, 160, 99, 0.2); }
-        .env-letter img { width: 35px; margin-bottom: 10px; opacity: 0.9; }
-        .env-letter p { margin: 0; font-family: 'Playfair Display', serif; font-size: 13px; font-weight: 600; color: #333; font-style: italic;}
+        /* Teks Petunjuk Bawah (Soft Maroon) */
+        .env-text { margin-top: 40px; font-family: 'Poppins', sans-serif; font-size: 11px; font-weight: 400; color: #7a0017; letter-spacing: 2.5px; text-transform: uppercase; animation: pulse 2s infinite; opacity: 0.7;}
         
-        .wax-seal { position: absolute; width: 40px; height: 40px; background: radial-gradient(circle at center, #f5da9a 0%, #c9a063 60%, #b3884b 100%); border-radius: 50%; top: 65px; left: 90px; z-index: 4; box-shadow: 0 5px 10px rgba(0,0,0,0.2); transition: opacity 0.4s ease 0.2s, transform 0.6s ease; transform-origin: top;}
-        .wax-seal-inner { position: absolute; inset: 4px; border: 1px solid rgba(255,255,255,0.3); border-radius: 50%; display: flex; justify-content: center; align-items: center; color: rgba(0,0,0,0.2); font-family: 'Playfair Display', serif; font-size: 18px; font-weight: bold;}
-        
-        .env-text { margin-top: 40px; font-family: 'Poppins', sans-serif; font-size: 11px; font-weight: 500; color: rgba(255,215,0,0.6); letter-spacing: 3px; text-transform: uppercase; animation: pulse 2s infinite; }
-        
-        .env-wrapper.open::before { transform: rotateX(180deg); z-index: 1; }
-        .env-wrapper.open .wax-seal { opacity: 0; transform: translateY(-30px); }
-        .env-wrapper.open .env-letter { transform: translateY(-70px); z-index: 3; }
+        /* Animasi saat diklik (.open) */
+        .env-wrapper.open .env-flap { transform: rotateX(160deg); z-index: 1; }
+        .env-wrapper.open .wax-seal { opacity: 0; transform: translateY(-20px) scale(0.8); }
+        .env-wrapper.open .env-letter { transform: translateY(-75px); z-index: 3; }
 
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+        @keyframes pulse { 0%, 100% { opacity: 0.7; } 50% { opacity: 0.3; } }
 
         /* =========================================
-           2. KARTU UCAPAN (GLASSMORPHISM)
+           2. KARTU UCAPAN (SOFT THEME) & TRANSISI
            ========================================= */
         #main-container { position: fixed; inset: 0; z-index: 2000; display: flex; justify-content: center; align-items: center; transition: transform 0.8s ease-in-out; background: inherit; }
-        .card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); padding: 40px 30px; border-radius: 20px; text-align: center; width: 85%; max-width: 320px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); border: 1px solid rgba(201, 160, 99, 0.2); }
         
+        /* Kartu dengan warna soft dan rapi */
+        .card { background: rgba(255, 255, 255, 0.96); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); padding: 40px 30px; border-radius: 20px; text-align: center; width: 85%; max-width: 320px; box-shadow: 0 15px 35px rgba(0,0,0,0.03); /* Aksen Hijau Sage */ border: 1px solid rgba(45, 90, 39, 0.15); }
+        
+        /* Area Teks dengan Transisi Halus */
         #text-content { transition: opacity 0.4s ease, transform 0.4s ease; }
         .fade-out { opacity: 0; transform: translateY(10px); }
         
-        .card h2 { color: #333; font-family: 'Playfair Display', serif; font-size: 22px; margin-top: 0; margin-bottom: 12px; font-weight: 600; font-style: italic; }
-        .card p { color: #555; font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 300; line-height: 1.7; margin-bottom: 30px; }
+        .card h2 { color: #2d3436; font-family: 'Playfair Display', serif; font-size: 22px; margin-top: 0; margin-bottom: 12px; font-weight: 500; font-style: italic; }
+        .card p { color: #636e72; font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 300; line-height: 1.7; margin-bottom: 30px; }
         
-        .btn-utama { background: #333; font-family: 'Poppins', sans-serif; border: none; padding: 14px 25px; border-radius: 50px; color: white; font-weight: 500; cursor: pointer; width: 100%; display: none; transition: transform 0.2s, background 0.2s; font-size: 13px; letter-spacing: 1px; }
-        .btn-utama:hover { background: #000; transform: translateY(-2px); }
+        /* Tombol Soft Maroon */
+        .btn-utama { background: #7a0017; font-family: 'Poppins', sans-serif; border: none; padding: 14px 25px; border-radius: 50px; color: white; font-weight: 400; cursor: pointer; width: 100%; display: none; transition: transform 0.2s, background 0.2s; font-size: 13px; letter-spacing: 1px; text-transform: uppercase;}
+        .btn-utama:hover { background: #5c0011; transform: translateY(-2px); }
         
         /* =========================================
-           3. TUTORIAL PEMINDAI (PONSEL EMAS MELAYANG)
+           3. TUTORIAL PEMINDAI (BOTANICAL WREATH - MEMORABEL)
            ========================================= */
         #scanner-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
-        #tutorial-overlay { position: fixed; inset: 0; z-index: 1500; display: none; flex-direction: column; justify-content: center; align-items: center; background: rgba(0,0,0,0.9); color: white; backdrop-filter: blur(8px); }
         
-        /* Wadah Animasi HP Melayang */
-        .tutorial-phone-container { position: relative; width: 140px; height: 240px; margin-bottom: 30px; animation: floatPhone 3.5s ease-in-out infinite; }
-        .floating-phone-svg { width: 100%; height: 100%; filter: drop-shadow(0 15px 25px rgba(201, 160, 99, 0.2)); }
+        /* Overlay gelap transparan lembut */
+        #tutorial-overlay { position: fixed; inset: 0; z-index: 1500; display: none; flex-direction: column; justify-content: center; align-items: center; background: rgba(12, 13, 16, 0.88); color: white; backdrop-filter: blur(5px); }
         
-        @keyframes floatPhone { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-15px); } }
+        /* ⚠️ PERUBAHAN BESAR: Wadah Karangan Bunga Berdenyut (Tanpa HP) */
+        .tutorial-wreath-container { position: relative; width: 200px; height: 200px; margin-bottom: 40px; animation: pulseWreath 2.5s ease-in-out infinite; }
+        
+        /* SVG Karangan Bunga Hati (Murni Kode) - Warna Hijau Sage */
+        .botanical-wreath-svg { width: 100%; height: 100%; filter: drop-shadow(0 0 10px rgba(113, 156, 110, 0.3)); }
+        
+        /* Animasi denyut karangan bunga */
+        @keyframes pulseWreath { 0%, 100% { transform: scale(1); opacity: 0.9; } 50% { transform: scale(1.05); opacity: 0.6; } }
 
-        /* Garis Scan yang bergerak di atas HP */
-        .scan-line-vertical { position: absolute; left: 22%; right: 22%; height: 2px; background: #ffdf91; box-shadow: 0 0 15px #ffdf91, 0 0 5px #ffffff; animation: scanUpDown 2.5s ease-in-out infinite; border-radius: 50%; z-index: 2; }
-        @keyframes scanUpDown { 
-            0% { top: 22%; opacity: 0; } 
+        /* ⚠️ PERUBAHAN: Garis Scan Soft (Warna Hijau Sage) */
+        .scan-line-wreath { position: absolute; top: 10%; left: 10%; right: 10%; height: 2px; background: rgba(113, 156, 110, 0.6); box-shadow: 0 0 15px rgba(113, 156, 110, 0.8); animation: scanUpDownWreath 2.5s ease-in-out infinite; border-radius: 50%; z-index: 2; }
+        @keyframes scanUpDownWreath { 
+            0% { top: 15%; opacity: 0; } 
             15% { opacity: 1; } 
-            50% { top: 78%; } 
+            50% { top: 85%; } 
             85% { opacity: 1; } 
-            100% { top: 22%; opacity: 0; } 
+            100% { top: 15%; opacity: 0; } 
         }
 
-        .tutorial-text h3 { font-family: 'Playfair Display', serif; font-weight: 600; font-size: 20px; margin: 0 0 10px 0; letter-spacing: 1px; color: #ffdf91; }
-        .tutorial-text p { font-family: 'Poppins', sans-serif; font-weight: 300; font-size: 13px; color: rgba(255, 255, 255, 0.7); margin: 0; line-height: 1.6; }
+        /* ⚠️ PERUBAHAN: Judul Tutorial (Warna Krem Soft, Bukan Emas) */
+        .tutorial-text h3 { font-family: 'Playfair Display', serif; font-weight: 500; font-size: 21px; margin: 0 0 10px 0; letter-spacing: 1px; color: #eaded1; text-shadow: 0 2px 4px rgba(0,0,0,0.3);}
+        .tutorial-text p { font-family: 'Poppins', sans-serif; font-weight: 300; font-size: 13px; color: rgba(255, 255, 255, 0.75); margin: 0; line-height: 1.7; }
 
-        /* Panel Admin */
+        /* Panel Admin (Tetap sama) */
         #admin-controls { position: fixed; top: 0; left: 0; z-index: 9999; background: rgba(0,0,0,0.8); color: white; padding: 10px; display: none; flex-wrap: wrap; gap: 5px; font-size: 10px; width: 100%; justify-content: center; font-family: sans-serif;}
         .btn-admin { background: #444; color: white; border: 1px solid #666; padding: 8px; border-radius: 4px; cursor: pointer; }
         #qr-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:10000; flex-direction:column; justify-content:center; align-items:center; color:white; }
@@ -88,40 +114,44 @@
 
     <div id="envelope-screen" onclick="bukaAmplop()">
         <div class="env-wrapper" id="amplop">
+            <div class="env-flap"></div>
             <div class="corner-ornament bl"></div>
             <div class="corner-ornament br"></div>
             <div class="wax-seal">
-                <div class="wax-seal-inner">H</div>
+                <div class="wax-seal-inner"></div>
             </div>
             <div class="env-letter">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#7a0017" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-                <p>Memoria</p>
+                <p>Hana Memoria</p>
             </div>
         </div>
         <div class="env-text" id="env-petunjuk">Sentuh untuk membuka</div>
     </div>
 
     <div id="tutorial-overlay">
-        <div class="tutorial-phone-container">
-            <svg viewBox="0 0 100 180" class="floating-phone-svg" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                    <linearGradient id="gold-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stop-color="#f5da9a" />
-                        <stop offset="50%" stop-color="#c9a063" />
-                        <stop offset="100%" stop-color="#b3884b" />
-                    </linearGradient>
-                </defs>
-                <rect x="15" y="10" width="70" height="150" rx="12" stroke="url(#gold-grad)" stroke-width="2.5" fill="rgba(20, 20, 20, 0.8)" />
-                <rect x="19" y="14" width="62" height="142" rx="9" stroke="rgba(255,255,255,0.15)" stroke-width="1" fill="none" />
-                <path d="M 40 14 L 60 14 C 62 14 63 15 63 17 L 37 17 C 37 15 38 14 40 14 Z" fill="url(#gold-grad)" opacity="0.8"/>
-                <rect x="25" y="50" width="50" height="70" rx="4" stroke="rgba(255, 215, 0, 0.4)" stroke-width="1.5" stroke-dasharray="4 4" fill="none" />
+        <div class="tutorial-wreath-container">
+            <svg viewBox="0 0 100 100" class="botanical-wreath-svg" xmlns="http://www.w3.org/2000/svg">
+                <path d="M 50 85 C 30 75, 15 60, 15 40 C 15 25, 30 15, 50 30" stroke="#719c6e" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+                <path d="M 50 85 C 70 75, 85 60, 85 40 C 85 25, 70 15, 50 30" stroke="#719c6e" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+                
+                <ellipse cx="25" cy="65" rx="3" ry="1.5" transform="rotate(-30 25 65)" fill="#2d5a27"/>
+                <ellipse cx="18" cy="50" rx="3" ry="1.5" transform="rotate(-10 18 50)" fill="#2d5a27"/>
+                <ellipse cx="22" cy="35" rx="3" ry="1.5" transform="rotate(20 22 35)" fill="#2d5a27"/>
+                <ellipse cx="35" cy="22" rx="3" ry="1.5" transform="rotate(45 35 22)" fill="#2d5a27"/>
+                
+                <ellipse cx="75" cy="65" rx="3" ry="1.5" transform="rotate(30 75 65)" fill="#2d5a27"/>
+                <ellipse cx="82" cy="50" rx="3" ry="1.5" transform="rotate(10 82 50)" fill="#2d5a27"/>
+                <ellipse cx="78" cy="35" rx="3" ry="1.5" transform="rotate(-20 78 35)" fill="#2d5a27"/>
+                <ellipse cx="65" cy="22" rx="3" ry="1.5" transform="rotate(-45 65 22)" fill="#2d5a27"/>
+                
+                <rect x="35" y="38" width="30" height="30" rx="2" stroke="rgba(113, 156, 110, 0.4)" stroke-width="1" stroke-dasharray="3 3" fill="none" />
             </svg>
             
-            <div class="scan-line-vertical"></div>
+            <div class="scan-line-wreath"></div>
         </div>
         <div class="tutorial-text" style="text-align: center;">
-            <h3>Arahkan Kamera</h3>
-            <p>Paskan layar ponsel pada foto fisik,<br>keajaiban akan segera hadir.</p>
+            <h3>Bingkai Kenangan</h3>
+            <p>Paskan karangan bunga di layar pada foto,<br>saksikan momen indah bersemi kembali. 🌸</p>
         </div>
     </div>
 
@@ -144,7 +174,7 @@
                 <h2 id="judul-txt">Mempersiapkan...</h2>
                 <p id="isi-txt">Menata setiap detail memori berharga...</p>
             </div>
-            <button class="btn-utama" id="btn-next" onclick="handleNext()">LANJUT</button>
+            <button class="btn-utama" id="btn-next" onclick="handleNext()">LANJUTKAN</button>
         </div>
     </div>
 
@@ -213,7 +243,7 @@
                         slides = [
                             { "t": "Kepingan Memori ✨", "b": "Setiap momen memiliki ceritanya sendiri. Hari ini, kenangan manis itu akan kembali dihidupkan khusus untukmu." },
                             { "t": "Pesan Spesial 💌", "b": "Ada sebaris doa dan rindu yang telah disiapkan. Semoga ini mengukir senyum di wajahmu." },
-                            { "t": "Selamat Bernostalgia", "b": "Sentuh tombol di bawah, arahkan kameramu ke foto fisik, dan saksikan keajaibannya.🌸" }
+                            { "t": "Selamat Bernostalgia", "b": "Sentuh tombol di bawah, arahkan kameramu ke foto fisik, dan saksikan keajaibannya. 🌸" }
                         ];
                     }
 
@@ -292,6 +322,7 @@
                 }, 400);
                 
             } else {
+                // Masuk ke mode AR
                 document.getElementById('main-container').style.transform = "translateY(-100%)";
                 document.getElementById('tutorial-overlay').style.display = 'flex';
                 
