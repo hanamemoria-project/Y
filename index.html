@@ -23,12 +23,12 @@
         
         .env-letter { position: absolute; width: 210px; height: 140px; background: #fff5f0; top: 10px; left: 15px; z-index: 2; transition: transform 0.8s ease; display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.03); border-radius: 8px; border: 1px solid rgba(216, 160, 124, 0.1); }
         
-        .env-letter img { width: 110px; height: auto; object-fit: contain; }
+        /* Diperbesar agar logo di amplop sangat jelas */
+        .env-letter img { width: 150px; height: auto; object-fit: contain; }
         
-        /* ⚠️ PERUBAHAN: Warna Lilin Menjadi Soft Nude / Rose Gold */
-        .wax-seal { position: absolute; width: 48px; height: 48px; background: radial-gradient(circle at center, #fdfbf7 0%, #d8a07c 60%, #b88663 100%); border-radius: 50%; top: 68px; left: 96px; z-index: 4; box-shadow: 0 5px 15px rgba(0,0,0,0.15); transition: opacity 0.4s ease 0.2s, transform 0.6s ease; transform-origin: top;}
-        
-        .wax-seal-inner { position: absolute; inset: 4px; background: rgba(255,255,255,0.1); border-radius: 50%; display: flex; justify-content: center; align-items: center; border: 1px solid rgba(255,255,255,0.3);}
+        /* Lilin Amplop Soft & Logo Timbul */
+        .wax-seal { position: absolute; width: 48px; height: 48px; background: #d8a07c; border-radius: 50%; top: 68px; left: 96px; z-index: 4; box-shadow: 0 5px 15px rgba(0,0,0,0.15); transition: opacity 0.4s ease 0.2s, transform 0.6s ease; transform-origin: top;}
+        .wax-seal-inner { position: absolute; inset: 4px; background: rgba(255,255,255,0.05); border-radius: 50%; display: flex; justify-content: center; align-items: center; border: 1px solid rgba(255,255,255,0.3);}
         
         .corner-ornament { position: absolute; width: 30px; height: 30px; border: 1px solid #eaded1; z-index: 2; opacity: 0.8; }
         .corner-ornament.bl { bottom: 8px; left: 8px; border-width: 0 0 1px 1px; }
@@ -55,20 +55,33 @@
         .card h2 { color: #2d3436; font-family: 'Playfair Display', serif; font-size: 22px; margin-top: 0; margin-bottom: 12px; font-weight: 600; font-style: italic; }
         .card p { color: #636e72; font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 300; line-height: 1.7; margin-bottom: 30px; }
         
-        /* ⚠️ PERUBAHAN: Warna Tombol Lanjut Sama Dengan Lilin */
         .btn-utama { background: #d8a07c; font-family: 'Poppins', sans-serif; border: none; padding: 14px 25px; border-radius: 50px; color: white; font-weight: 500; cursor: pointer; width: 100%; display: none; transition: transform 0.2s, background 0.2s; font-size: 13px; letter-spacing: 1px; text-transform: uppercase; box-shadow: 0 4px 10px rgba(216, 160, 124, 0.3);}
         .btn-utama:hover { background: #b88663; transform: translateY(-2px); }
         
         /* =========================================
-           3. TUTORIAL PEMINDAI LOGO AR (DIPERJELAS)
+           3. TUTORIAL PEMINDAI LOGO AR
            ========================================= */
         #scanner-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
         #tutorial-overlay { position: fixed; inset: 0; z-index: 1500; display: none; flex-direction: column; justify-content: center; align-items: center; background: rgba(0, 0, 0, 0.4); color: white; backdrop-filter: blur(4px); }
         
-        /* ⚠️ PERUBAHAN: Box putih transparan agar logo selalu terbaca jelas */
-        .tutorial-logo-container { position: relative; width: 160px; margin-bottom: 40px; animation: pulseLogo 3.0s ease-in-out infinite; display: flex; justify-content: center; align-items: center; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(10px); padding: 25px; border-radius: 20px; box-shadow: 0 15px 30px rgba(0,0,0,0.15); border: 1px solid rgba(255,255,255,0.6);}
+        /* Bantalan Kaca Putih Transparan */
+        .tutorial-glass-box {
+            position: relative;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 25px; 
+            border-radius: 20px; 
+            margin-bottom: 30px; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            border: 1px solid rgba(255,255,255,0.4);
+        }
+
+        .tutorial-logo-container {
+            position: relative; width: 160px; height: 160px; display: flex; justify-content: center; align-items: center; animation: pulseLogo 3.0s ease-in-out infinite;
+        }
         
-        .tutorial-logo { width: 100%; height: auto; }
+        .tutorial-logo { width: 100%; height: auto; object-fit: contain; filter: drop-shadow(0 0 10px rgba(255,255,255,0.5)); }
         
         @keyframes pulseLogo { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
 
@@ -93,7 +106,7 @@
             
             <div class="wax-seal">
                 <div class="wax-seal-inner">
-                    <svg viewBox="0 0 120 100" style="width: 26px; height: 26px; color: rgba(255,255,255,0.9);" xmlns="http://www.w3.org/2000/svg">
+                    <svg viewBox="0 0 120 100" style="width: 25px; height: 25px; color: rgba(255,255,255,0.9);" xmlns="http://www.w3.org/2000/svg">
                         <rect x="42" y="8" width="36" height="36" fill="none" stroke="currentColor" stroke-width="2.5"/>
                         <path d="M 60,26 C 35,8 15,18 15,31 C 15,43 35,48 60,26 C 85,8 105,18 105,35 C 105,48 85,48 60,26 Z" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/>
                     </svg>
@@ -101,19 +114,21 @@
             </div>
 
             <div class="env-letter">
-                <img src="URL_LOGO_KAMU_DISINI" alt="Hana Memoria Logo">
+                <img src="https://pub-02d853231cff4efa92ee6754c646a898.r2.dev/Logo_HM.png" alt="Hana Memoria Logo">
             </div>
         </div>
         <div class="env-text" id="env-petunjuk">Sentuh untuk membuka</div>
     </div>
 
     <div id="tutorial-overlay">
-        <div class="tutorial-logo-container">
-            
-            <img src="URL_LOGO_KAMU_DISINI" class="tutorial-logo" alt="Scanning Logo">
-            
-            <div class="scan-line-logo"></div>
+        
+        <div class="tutorial-glass-box">
+            <div class="tutorial-logo-container">
+                <img src="https://pub-02d853231cff4efa92ee6754c646a898.r2.dev/Logo_HM.png" class="tutorial-logo" alt="Scanning Logo">
+                <div class="scan-line-logo"></div>
+            </div>
         </div>
+
         <div class="tutorial-text" style="text-align: center;">
             <h3>Fokus ke Foto</h3>
             <p>Arahkan kameramu tepat ke foto fisik,<br>saksikan momen indah bersemi kembali. 🌸</p>
